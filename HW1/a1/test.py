@@ -75,8 +75,11 @@ print("Функцията bestAlignment премина теста.")
 
 #### Тест на correct_spelling
 
+import nltk
+nltk.download('punkt_tab')
+
 print('Прочитане на корпуса от текстове...')
-corpus_root = '../JOURNALISM.BG/C-MassMedia'
+corpus_root = '/Users/I764233/uni/TI/HW1/a1/'
 myCorpus = PlaintextCorpusReader(corpus_root, '.*\.txt')
 fullSentCorpus = [ [langmodel.startToken] + [w.lower() for w in sent] + [langmodel.endToken] for sent in myCorpus.sents()]
 print('Готово.')
@@ -86,7 +89,7 @@ M2 = langmodel.MarkovModel(fullSentCorpus,2)
 print('Готово.')
 
 print('Прочитане на корпуса с правописни грешки...')
-with open('corpus', encoding="utf-8") as f: 
+with open('/Users/I764233/uni/TI/HW1/a1/corpus', encoding="utf-8") as f: 
 	lines = f.read().split('\n')[:-1]
 error_corpus : list[tuple[str,str]] = []
 for c in lines:
@@ -95,6 +98,9 @@ for c in lines:
 print('Готово.')
 
 weights = a1.trainWeights(error_corpus)
-assert a1.correctSpelling("светфно по футбол",M2,weights,0.3) == 'световно по футбол', "Коригираната заявка следва да е 'световно по футбол'"
+
+word = a1.correctSpelling("светфно по футбол", M2, weights, 0.3)
+print(word)
+assert word == 'световно по футбол', "Коригираната заявка следва да е 'световно по футбол'"
 print("Функцията correctSpelling премина теста.")
 

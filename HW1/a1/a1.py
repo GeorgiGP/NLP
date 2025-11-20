@@ -239,7 +239,7 @@ def generateCandidates(query : str, dictionary : dict[str, int]) -> list[str]:
 
 	### Изход:
 	###	 Списък от низовете, които са кандидати за корекция
-	
+
 	def allWordsInDictionary(q : str) -> bool:
 		### Помощна функция, която връща истина, ако всички думи в заявката са в речника
 		return all(w in dictionary for w in q.split())
@@ -283,9 +283,10 @@ def correctSpelling(r : str, model : langmodel.MarkovModel, weights : dict[tuple
 	result = ''
 	maxProbability = 0
 
-	words = generateCandidates(r)
+	words = generateCandidates(r, model.kgrams[tuple()])
+
 	for word in words :
-		curProbability = - editWeight(r, word) + mu * model.sentenceLogProbability(word, alpha)
+		curProbability = - editWeight(r, word, weights) + mu * model.sentenceLogProbability(word, alpha)
 		if curProbability > maxProbability :
 			result = word
 			maxProbability = curProbability
