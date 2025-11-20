@@ -126,11 +126,34 @@ def bestAlignment(s1 : str, s2 : str) -> list[tuple[str,str]]:
 	#############################################################################	
 	#### Начало на Вашия код. На мястото на pass се очакват 15-30 реда
 
-	pass
+	i = len(s1)
+	j = len(s2)
+
+	while i > 0 and j > 0 :
+		if i > 0 and M[i - 1, j] == M[i, j] - 1 :
+			alignment.append((s1[i - 1], ''))
+			i-=1
+		elif j > 0 and M[i, j - 1] == M[i, j] - 1 : 
+			alignment.append(('', s2[j - 1]))
+			j-=1
+		elif i > 0 and j > 0 and M[i - 1, j - 1] == M[i, j] - (s1[i-1] != s2[j - 1]) :
+			alignment.append((s1[i - 1], s2[j - 1]))
+			i-=1
+			j-=1
+		elif i > 0 and j > 1 and M[i - 1, j - 2] == M[i ,j] - 1 :
+			alignment.append((s1[i - 1], s2[j - 2] + s2[j - 1]))
+			i-=1
+			j-=2
+		else :
+			alignment.append((s1[i - 2] + s1[i - 1], s2[j - 1]))
+			i-=2
+			j-=1
+
+	alignment = reversed(alignment)
 			
 	#### Край на Вашия код
 	#############################################################################
-			
+	
 	return alignment
 
 def trainWeights(corpus : list[tuple[str,str]]) -> dict[tuple[str,str],float]:
@@ -177,7 +200,31 @@ def generateEdits(q : str) -> list[str]:
 	#############################################################################
 	#### Начало на Вашия код. На мястото на pass се очакват 10-20 реда
 
-	return []
+	edits = []
+	for i in range(len(q) + 1) :
+		for a in langmodel.alphabet :
+			edits.append(q[:i] + a + q[i:]) # Insert
+			#print(q[:i] + a + q[i:])
+
+	for i in range(len(q)) : 
+		edits.append(q[:i] + q[i+1:]) # Remove
+		#print(q[:i] + q[i+1:])
+
+		for a in langmodel.alphabet :
+			edits.append(q[:i] + a + q[i+1:]) # Replace
+			#print(q[:i] + a + q[i+1:])
+
+			for b in langmodel.alphabet :
+				edits.append(q[:i] + a + b + q[i+1:]) # Split
+				#print(q[:i] + a + b + q[i+1:])
+
+	for i in range(len(q) - 1) :
+		for a in langmodel.alphabet :
+			edits.append(q[:i] + a + q[i+2:])
+			#print(q[:i] + a + q[i+2:])
+	
+		
+	return edits
 
 	#### Край на Вашия код
 	#############################################################################
@@ -227,13 +274,23 @@ def correctSpelling(r : str, model : langmodel.MarkovModel, weights : dict[tuple
 	###		коефициент за интерполация на езиковият модел: alpha
 	### Изход: най-вероятната заявка
 
-
+	
 	### УПЪТВАНЕ:
 	###	Удачно е да работите с логаритъм от вероятностите. Логаритъм от вероятността от езиковия модел може да получите като извикате метода model.sentenceLogProbability. Минус логаритъм от вероятността за редактиране може да получите като извикате функцията editWeight.
 	#############################################################################
 	#### Начало на Вашия код за основното тяло на функцията correct_spelling. На мястото на pass се очакват 3-10 реда
 
-	pass
+	result = ''
+	maxProbability = 0
+
+	words = generateCandidates(r)
+	for word in words :
+		curProbability = - editWeight(r, word) + mu * model.sentenceLogProbability(word, alpha)
+		if curProbability > maxProbability :
+			result = word
+			maxProbability = curProbability
+
+	return result
 
 	#### Край на Вашия код
 	#############################################################################

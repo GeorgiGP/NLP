@@ -42,59 +42,59 @@ for s1,s2,d in zip(L1,L2,D):
     assert a1.editWeight(s1,s2,dummy_weights) == d, "Теглото между '{}' и '{}' следва да е '{}'".format(s1,s2,d)
 print("Функцията editWeight премина теста.")
 
-# #### Тест на generate_edits
-# assert len(set(a1.generateEdits("тест"))-set(["тест"])) == 4218, "Броят на елементарните редакции \"тест\"  следва да е 4218"
-# print("Функцията generateEdits премина теста.")
+#### Тест на generate_edits
+assert len(set(a1.generateEdits("тест"))-set(["тест"])) == 4218, "Броят на елементарните редакции \"тест\"  следва да е 4218"
+print("Функцията generateEdits премина теста.")
 
 
-# #### Тест на bestAlignment
-# def test_bestAlignment(s1,s2,alignment):
-# 	a1 = ''
-# 	a2 = ''
-# 	w = 0
-# 	for u,v in alignment:
-# 		if len(u)==1 and len(v)==1:
-# 			if u!=v: w+=1
-# 		elif len(u)==0 and len(v)==1: w+=1
-# 		elif len(u)==1 and len(v)==0: w+=1
-# 		elif len(u)==2 and len(v)==1 and u[0]!=v[0] and u[1]!=v[0]: w+=1
-# 		elif len(u)==1 and len(v)==2 and u[0]!=v[0] and u[0]!=v[1]: w+=1
-# 		else:
-# 			w=None
-# 			break
+#### Тест на bestAlignment
+def test_bestAlignment(s1,s2,alignment):
+	a1 = ''
+	a2 = ''
+	w = 0
+	for u,v in alignment:
+		if len(u)==1 and len(v)==1:
+			if u!=v: w+=1
+		elif len(u)==0 and len(v)==1: w+=1
+		elif len(u)==1 and len(v)==0: w+=1
+		elif len(u)==2 and len(v)==1 and u[0]!=v[0] and u[1]!=v[0]: w+=1
+		elif len(u)==1 and len(v)==2 and u[0]!=v[0] and u[0]!=v[1]: w+=1
+		else:
+			w=None
+			break
 			
-# 		a1 += u
-# 		a2 += v
-# 	if a1 != s1 or a2 != s2: w=None
-# 	return w
+		a1 += u
+		a2 += v
+	if a1 != s1 or a2 != s2: w=None
+	return w
 
-# for s1,s2,d in zip(L1,L2,C):
-# 	assert test_bestAlignment(s1,s2,a1.bestAlignment(s1,s2)) == d, "Грешно минимално подравняване между '{}' и '{}'".format(s1,s2)
-# print("Функцията bestAlignment премина теста.")
+for s1,s2,d in zip(L1,L2,C):
+	assert test_bestAlignment(s1,s2,a1.bestAlignment(s1,s2)) == d, "Грешно минимално подравняване между '{}' и '{}'".format(s1,s2)
+print("Функцията bestAlignment премина теста.")
 
 
-# #### Тест на correct_spelling
+#### Тест на correct_spelling
 
-# print('Прочитане на корпуса от текстове...')
-# corpus_root = '../JOURNALISM.BG/C-MassMedia'
-# myCorpus = PlaintextCorpusReader(corpus_root, '.*\.txt')
-# fullSentCorpus = [ [langmodel.startToken] + [w.lower() for w in sent] + [langmodel.endToken] for sent in myCorpus.sents()]
-# print('Готово.')
+print('Прочитане на корпуса от текстове...')
+corpus_root = '../JOURNALISM.BG/C-MassMedia'
+myCorpus = PlaintextCorpusReader(corpus_root, '.*\.txt')
+fullSentCorpus = [ [langmodel.startToken] + [w.lower() for w in sent] + [langmodel.endToken] for sent in myCorpus.sents()]
+print('Готово.')
 
-# print('Трениране на Марковски езиков модел...')
-# M2 = langmodel.MarkovModel(fullSentCorpus,2)
-# print('Готово.')
+print('Трениране на Марковски езиков модел...')
+M2 = langmodel.MarkovModel(fullSentCorpus,2)
+print('Готово.')
 
-# print('Прочитане на корпуса с правописни грешки...')
-# with open('corpus', encoding="utf-8") as f: 
-# 	lines = f.read().split('\n')[:-1]
-# error_corpus : list[tuple[str,str]] = []
-# for c in lines:
-#     s = c.split('\t')
-#     error_corpus.append((s[0],s[1]))
-# print('Готово.')
+print('Прочитане на корпуса с правописни грешки...')
+with open('corpus', encoding="utf-8") as f: 
+	lines = f.read().split('\n')[:-1]
+error_corpus : list[tuple[str,str]] = []
+for c in lines:
+    s = c.split('\t')
+    error_corpus.append((s[0],s[1]))
+print('Готово.')
 
-# weights = a1.trainWeights(error_corpus)
-# assert a1.correctSpelling("светфно по футбол",M2,weights,0.3) == 'световно по футбол', "Коригираната заявка следва да е 'световно по футбол'"
-# print("Функцията correctSpelling премина теста.")
+weights = a1.trainWeights(error_corpus)
+assert a1.correctSpelling("светфно по футбол",M2,weights,0.3) == 'световно по футбол', "Коригираната заявка следва да е 'световно по футбол'"
+print("Функцията correctSpelling премина теста.")
 
